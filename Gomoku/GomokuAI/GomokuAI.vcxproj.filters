@@ -15,14 +15,11 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GomokuUI.cpp">
+    <ClCompile Include="GomokuAI.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="UserInterface.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\Gomokubasic.h">
       <Filter>头文件</Filter>
     </ClInclude>
