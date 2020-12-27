@@ -351,3 +351,4 @@ MigrationBackup/
 
 #personal define by Ice world
 *.vscode
+*.dat
