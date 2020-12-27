@@ -13,8 +13,7 @@ void AI_input(int &x_i,int &y_i);
 
 int chessboard[SIZE][SIZE];
 int color = BLACK;
-int dir[8][2] = { {1,0},{1,1},{0,1},{-1,1},
-				{-1,0},{-1,-1},{-1,0},{-1,1} };
+
 bool again = false;
 
 FILE* fp;
