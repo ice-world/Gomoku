@@ -7,6 +7,7 @@
 void Play();
 void Init();
 bool Click(int& x, int& y);
+void AI_Click();
 int Winning_check();
 bool Winning_check_onedir(int t, int x, int y,int color);
 void AI_input(int &x_i,int &y_i);
@@ -17,7 +18,7 @@ int color = BLACK;
 bool again = false;
 
 FILE* fp;
-int game_mode = 2;
+int game_mode = 3;
 double unit_width;
 double unit_hight;
 
@@ -70,27 +71,10 @@ void Play()
 	bool click = false;
 	for (; is_run(); delay_fps(60))
 	{
-		click = Click(x, y);
-		if (click)
+		if (game_mode == 1)	//PVP
 		{
-			if (game_mode == 2)						//AI交互
-			{
-				int x_i, y_i;
-				AI_input(x_i, y_i);
-				chessboard[x_i][y_i] = color;				//为了在显示上将棋子显示的位置于数组中的位置相对，将xy位置对换
-				fillellipse((int)(y_i * unit_width), (int)(x_i * unit_hight), (int)(unit_width / 2), (int)(unit_hight / 2));
-				if (color == BLACK)
-				{
-					setfillcolor(EGERGB(255, 255, 255));
-					color = -color;
-				}
-				else if (color == WHITE)
-				{
-					setfillcolor(EGERGB(0, 0, 0));
-					color = -color;
-				}
-
-			}
+			Click(x, y);
+			Click(x, y);
 			int win_check = Winning_check();
 			if (win_check != 0)
 			{
@@ -107,9 +91,79 @@ void Play()
 				else
 					return;
 			}
+		}
 
+
+		if (game_mode == 2)				//PVE
+		{
+			click = Click(x, y);
+			if (click)
+			{
+				AI_Click();
+				int win_check = Winning_check();
+				if (win_check != 0)
+				{
+					Sleep(500);
+					if (win_check == 1)
+						MessageBox(NULL, TEXT("白棋获胜"), TEXT("游戏结束"), MB_SYSTEMMODAL);
+					if (win_check == -1)
+						MessageBox(NULL, TEXT("黑棋获胜"), TEXT("游戏结束"), MB_SYSTEMMODAL);
+					if (MessageBox(NULL, TEXT("是否再来一局"), TEXT("游戏结束"), MB_SYSTEMMODAL | MB_YESNO) == IDYES)
+					{
+						again = true;
+						return;
+					}
+					else
+						return;
+				}
+
+			}
+		}
+
+
+		if (game_mode == 3)
+		{
+			AI_Click();
+			Sleep(100);
+			AI_Click();
+			Sleep(100);
+			int win_check = Winning_check();
+			if (win_check != 0)
+			{
+				Sleep(500);
+				if (win_check == 1)
+					MessageBox(NULL, TEXT("白棋获胜"), TEXT("游戏结束"), MB_SYSTEMMODAL);
+				if (win_check == -1)
+					MessageBox(NULL, TEXT("黑棋获胜"), TEXT("游戏结束"), MB_SYSTEMMODAL);
+				if (MessageBox(NULL, TEXT("是否再来一局"), TEXT("游戏结束"), MB_SYSTEMMODAL | MB_YESNO) == IDYES)
+				{
+					again = true;
+					return;
+				}
+				else
+					return;
+			}
 		}
 	}
+}
+
+void AI_Click()
+{
+	int x_i, y_i;
+	AI_input(x_i, y_i);
+	chessboard[x_i][y_i] = color;				//为了在显示上将棋子显示的位置于数组中的位置相对，将xy位置对换
+	fillellipse((int)(y_i * unit_width), (int)(x_i * unit_hight), (int)(unit_width / 2), (int)(unit_hight / 2));
+	if (color == BLACK)
+	{
+		setfillcolor(EGERGB(255, 255, 255));
+		color = -color;
+	}
+	else if (color == WHITE)
+	{
+		setfillcolor(EGERGB(0, 0, 0));
+		color = -color;
+	}
+	return;
 }
 
 bool Click(int& x, int& y)
@@ -202,7 +256,10 @@ void AI_input(int &x_i,int &y_i)
 		fprintf(fp, "\n");
 	}
 	fclose(fp);
-	ShellExecute(NULL, TEXT("open"), TEXT("GomokuAI.exe"), TEXT(""), TEXT(""), SW_HIDE);
+	if(color == BLACK)
+		ShellExecute(NULL, TEXT("open"), TEXT("GomokuAIB.exe"), TEXT("BLACK"), TEXT(""), SW_HIDE);
+	else
+		ShellExecute(NULL, TEXT("open"), TEXT("GomokuAIW.exe"), TEXT("WHITE"), TEXT(""), SW_HIDE);
 	Sleep(200);
 	FILE* in;
 	in = fopen("input.in", "r");

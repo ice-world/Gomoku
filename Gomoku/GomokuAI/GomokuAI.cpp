@@ -15,8 +15,12 @@ int num_count(int x, int y, int d, int color);
 int chessboard[SIZE][SIZE];
 int score[SIZE][SIZE];
 int color = WHITE;
-int main()
+int main(int argc, char* argv[])
 {
+	if (argv[0] == "BLACK")
+		color = BLACK;
+	else
+		color = WHITE;
 	init();
 	for (int i = 1; i < SIZE; i++)
 		for (int j = 1; j < SIZE; j++)
@@ -37,19 +41,31 @@ void init()
 	}
 	fclose(fp);
 
-	memset(score, 0, sizeof(score));
+	memset(score, -1, sizeof(score));
 }
 void input()
 {
 	in = fopen("input.in", "w");
 	test = fopen("test.in", "w");
-	int x = 1, y = 1;
+	int x = 0, y = 1;
+	for (int i = 5; i < SIZE; i++)
+	{
+		for (int j = 5; j < SIZE; j++)
+			if (chessboard[i][j] == 0)
+			{
+				x = i;
+				y = j;
+				break;
+			}
+		if (x!=0)
+			break;
+	}
 	int max = 0;
 	for (int i = 1; i < SIZE; i++)
 	{
 		for (int j = 1; j < SIZE; j++)
 		{
-			if (score[i][j] >= max)
+			if (score[i][j] > max)
 			{
 				x = i;
 				y = j;
@@ -69,12 +85,16 @@ void Judge(int x,int y)
 {
 	int n = 0;
 	if (chessboard[x][y] != 0)
+	{
+		score[x][y] = -1000;
 		return;
+	}
 	int my_score = 0;
 	int opp_score = 0;
 	int my[8] = {0};
 	int opp[8] = { 0 };
 	int f;//测试变量，临时使用
+
 	for (int i = 0; i < 4; i++)
 	{
 		my_score = num_count(x, y, i,color)+ num_count(x, y, i+4, color) ;
@@ -99,7 +119,7 @@ int num_count(int x, int y, int d, int color)      //区域扫描
 		if (x + i * dir[d][0] >= SIZE || x + i * dir[d][0] < 1 || y + i * dir[d][1] >= SIZE || y + i * dir[d][1] < 1)
 			return count;
 		if (chessboard[x + i * dir[d][0]][y + i * dir[d][1]] == -color)
-				return --count;
+				return -count;
 		else if(chessboard[x + i * dir[d][0]][y + i * dir[d][1]] == 0)
 			return count;
 		count++;
