@@ -61,7 +61,10 @@ void Init()
 		line((int)i, (int)start_y, (int)i, (int)end_y);
 	for (double i = start_y; i < end_y; i += unit_hight)	//绘制横线
 		line((int)start_x, (int)i, (int)end_x, (int)i);
-
+	if (MessageBox(NULL, TEXT("AI对战（是）还是对战AI(否)"), TEXT("游戏选择"), MB_SYSTEMMODAL | MB_YESNO) == IDYES)
+		game_mode = 3;
+	else
+		game_mode = 2;
 	color = BLACK;  
 }
 
